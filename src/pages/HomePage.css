@@ -1,0 +1,21 @@
+/* --- GRID DE PRODUTOS COMPARTILHADO --- */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.homepage-header {
+  text-align: center;
+  padding: 50px 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  margin-bottom: 40px;
+  border: 1px solid #e9ecef;
+}
+
+.homepage-header h1 {
+  color: #4A55A2;
+  margin-top: 0;
+}

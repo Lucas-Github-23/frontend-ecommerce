@@ -1,0 +1,156 @@
+/* --- BARRA DE NAVEGAÇÃO (NAVBAR) --- */
+.navbar {
+  background-color: #ffffff;
+  height: 70px; /* Altura ajustada */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #e9ecef;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 15px;
+}
+
+.nav-logo {
+  color: #4A55A2;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  text-align: center;
+  gap: 5px;
+}
+
+.nav-links {
+  color: #343a40;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Espaço entre ícone e texto */
+}
+
+.nav-links:hover {
+  background-color: #f1f3f5;
+  color: #4A55A2;
+}
+
+.nav-cart-link {
+  background-color: #4A55A2;
+  color: white;
+  font-weight: 600;
+  position: relative;
+}
+
+.nav-cart-link:hover {
+  background-color: #3a4380;
+  color: white;
+}
+
+.cart-badge {
+  background-color: #e63946;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  border: 2px solid white;
+}
+
+/* Esconde o texto dos links em telas pequenas */
+.nav-link-text {
+  display: none;
+}
+
+/* --- ESTILOS DO MENU DE USUÁRIO --- */
+.user-menu {
+  position: relative;
+}
+
+.user-menu-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: inherit;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  border: 1px solid #e9ecef;
+  width: 160px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-menu a, .dropdown-menu button {
+  padding: 12px 20px;
+  text-align: left;
+  text-decoration: none;
+  color: #343a40;
+  background: none;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.dropdown-menu a:hover, .dropdown-menu button:hover {
+  background-color: #f8f9fa;
+}
+
+
+/* --- Media Queries para Responsividade --- */
+@media (min-width: 768px) {
+  .navbar {
+    height: 80px;
+    font-size: 1.1rem;
+  }
+  .nav-container {
+    padding: 0 20px;
+  }
+  .nav-logo {
+    font-size: 1.8rem;
+  }
+  .nav-menu {
+    gap: 15px;
+  }
+  /* Mostra o texto dos links em telas maiores */
+  .nav-link-text {
+    display: inline;
+  }
+  .nav-cart-link {
+    padding: 8px 16px;
+  }
+  .cart-badge {
+    top: 0;
+    right: 0;
+  }
+}

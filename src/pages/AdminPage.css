@@ -1,0 +1,113 @@
+/* --- PÁGINA DE ADMINISTRAÇÃO --- */
+.admin-page { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 30px; 
+}
+
+.admin-form-container, .admin-product-list {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.admin-form-container form { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+}
+
+.admin-form-container input, .admin-form-container textarea {
+  padding: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.admin-form-container input:focus, .admin-form-container textarea:focus {
+    outline: none;
+    border-color: #4A55A2;
+    box-shadow: 0 0 0 3px rgba(74, 85, 162, 0.1);
+}
+
+.form-buttons { 
+    display: flex; 
+    flex-direction: column; /* Botões empilhados no mobile */
+    gap: 10px; 
+    margin-top: 10px;
+}
+
+.form-buttons button {
+    padding: 12px 22px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.form-buttons button[type="submit"] { 
+    background-color: #4A55A2; 
+    color: white; 
+}
+
+.form-buttons button[type="button"] { 
+    background-color: #6c757d; 
+    color: white; 
+}
+
+/* Tabela rolável em telas pequenas */
+.admin-product-list {
+    overflow-x: auto;
+}
+
+.admin-product-list table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    min-width: 600px; /* Largura mínima para evitar quebra */
+}
+
+.admin-product-list th, .admin-product-list td {
+  border-bottom: 1px solid #e9ecef;
+  padding: 12px;
+  text-align: left;
+}
+
+.admin-product-list th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+.admin-product-list button {
+  margin-right: 5px;
+  padding: 6px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #fff;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.admin-product-list button:hover { 
+    background-color: #f1f3f5; 
+}
+
+/* --- Media Query para telas maiores --- */
+@media (min-width: 768px) {
+    .admin-page {
+        gap: 40px;
+    }
+    .admin-form-container, .admin-product-list {
+        padding: 30px;
+    }
+    .form-buttons {
+        flex-direction: row; /* Botões lado a lado */
+    }
+    .admin-product-list td, .admin-product-list th {
+        padding: 15px;
+    }
+}

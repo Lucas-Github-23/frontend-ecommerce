@@ -1,38 +1,36 @@
-.App {
+/* --- RESET BÁSICO E CONFIGURAÇÕES GLOBAIS --- */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f8f9fa;
+  color: #343a40;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 20px auto; /* Reduzido para mobile */
+  padding: 0 15px; /* Reduzido para mobile */
+}
+
+/* --- MENSAGENS DE FEEDBACK --- */
+.loading-message, .error-message {
   text-align: center;
+  font-size: 1.1rem;
+  padding: 30px;
+  color: #6c757d;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.error-message {
+  color: #e63946;
+  font-weight: 600;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+/* --- Media Query para telas maiores --- */
+@media (min-width: 768px) {
+  .container {
+    margin: 40px auto;
+    padding: 0 20px;
   }
 }

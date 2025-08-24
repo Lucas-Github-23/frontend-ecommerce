@@ -1,0 +1,30 @@
+.filter-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  border: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.filter-container label {
+  font-weight: 600;
+}
+
+.filter-container select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+}
+
+/* --- GRID DE PRODUTOS COMPARTILHADO --- */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 20px;
+}
