@@ -33,7 +33,7 @@ const HomePage = () => {
   return (
     <div className="homepage">
       <header className="homepage-header">
-        <h1>Bem-vindo à nossa Loja!</h1>
+        <h1>Bem-vindo à NG Store!🤫</h1>
         <p>Confira nossos produtos em destaque.</p>
       </header>
       <div className="product-grid">
