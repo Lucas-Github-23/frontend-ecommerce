@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import axios from '../api/axiosConfig'; // Alterado para usar a configuração central do Axios
 import { AuthContext } from './AuthContext';
 
 export const CartContext = createContext();
@@ -8,35 +8,29 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const { userInfo } = useContext(AuthContext);
 
-  // Usamos useCallback para evitar recriar a função em cada renderização
   const fetchCart = useCallback(async () => {
     if (userInfo) {
       try {
         const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-        const { data } = await axios.get('http://localhost:5000/api/cart', config);
+        const { data } = await axios.get('/api/cart', config);
         
-        // A correção principal está aqui:
-        // Mapeamos os dados da API para o formato que os componentes esperam
         const formattedCart = data.map(item => ({
-          ...item.product, // Espalha todas as propriedades do produto (name, price, etc.)
-          quantity: item.quantity, // Adiciona a quantidade
+          ...item.product,
+          quantity: item.quantity,
         }));
         setCartItems(formattedCart);
 
       } catch (error) {
         console.error("Erro ao buscar o carrinho:", error);
-        // Se o token expirar ou for inválido, limpa o carrinho local
         if (error.response && error.response.status === 401) {
             setCartItems([]);
         }
       }
     } else {
-      // Limpa o carrinho se o usuário fizer logout
       setCartItems([]);
     }
   }, [userInfo]);
 
-  // Busca o carrinho quando o componente é montado ou o usuário muda
   useEffect(() => {
     fetchCart();
   }, [fetchCart]);
@@ -52,8 +46,8 @@ export const CartProvider = ({ children }) => {
 
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.post('http://localhost:5000/api/cart', { productId: product._id, quantity }, config);
-      fetchCart(); // Re-busca o carrinho para garantir que o estado está sincronizado
+      await axios.post('/api/cart', { productId: product._id, quantity }, config);
+      fetchCart();
     } catch (error) {
       console.error("Erro ao adicionar ao carrinho:", error);
     }
@@ -62,8 +56,8 @@ export const CartProvider = ({ children }) => {
   const removeFromCart = async (productId) => {
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.delete(`http://localhost:5000/api/cart/${productId}`, config);
-      fetchCart(); // Re-busca o carrinho
+      await axios.delete(`/api/cart/${productId}`, config);
+      fetchCart();
     } catch (error) {
       console.error("Erro ao remover do carrinho:", error);
     }
@@ -77,16 +71,14 @@ export const CartProvider = ({ children }) => {
     }
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.post('http://localhost:5000/api/cart', { productId, quantity: newQuantity }, config);
-      fetchCart(); // Re-busca o carrinho
+      await axios.post('/api/cart', { productId, quantity: newQuantity }, config);
+      fetchCart();
     } catch (error) {
       console.error("Erro ao atualizar quantidade:", error);
     }
   };
 
   const clearCart = async () => {
-    // Para limpar o carrinho, removemos cada item individualmente
-    // Uma rota de "clear all" no backend seria mais eficiente, mas isso funciona
     for (const item of cartItems) {
       await removeFromCart(item._id);
     }

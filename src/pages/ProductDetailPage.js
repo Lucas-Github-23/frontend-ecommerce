@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axiosConfig'; // Alterado para usar a configuração central do Axios
 import { CartContext } from '../context/CartContext';
-import { FiShoppingCart } from 'react-icons/fi'; // Importando ícone
+import { FiShoppingCart } from 'react-icons/fi';
 import './ProductDetailPage.css';
 
 const ProductDetailPage = () => {
@@ -16,7 +16,7 @@ const ProductDetailPage = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:5000/api/products/${id}`);
+        const response = await axios.get(`/api/products/${id}`);
         setProduct(response.data);
         setError('');
       } catch (err) {

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axiosConfig'; // Alterado para usar a configuração central do Axios
 import { AuthContext } from '../context/AuthContext';
 import './AuthForm.css';
 
@@ -20,7 +20,7 @@ const RegisterPage = () => {
       return;
     }
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
+      const { data } = await axios.post('/api/auth/register', { name, email, password });
       login(data);
       navigate('/');
     } catch (err) {

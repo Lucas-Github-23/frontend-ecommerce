@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../api/axiosConfig'; // Alterado para usar a configuração central do Axios
 import ProductCard from '../components/ProductCard';
 import './HomePage.css';
 
@@ -12,8 +12,7 @@ const HomePage = () => {
     const fetchFeaturedProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/products');
-        // Filtra os produtos que são marcados como "destaque"
+        const response = await axios.get('/api/products');
         const featured = response.data.filter(product => product.isFeatured);
         setFeaturedProducts(featured);
         setError('');

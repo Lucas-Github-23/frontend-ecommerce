@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../api/axiosConfig'; // Alterado para usar a configuração central do Axios
 import { AuthContext } from '../context/AuthContext';
-import './AuthForm.css'; // Reutilizando o estilo do formulário de autenticação
+import './AuthForm.css';
 
 const ProfilePage = () => {
   const { userInfo, updateUser } = useContext(AuthContext);
@@ -44,9 +44,9 @@ const ProfilePage = () => {
         updateData.password = password;
       }
 
-      const { data } = await axios.put('http://localhost:5000/api/auth/profile', updateData, config);
+      const { data } = await axios.put('/api/auth/profile', updateData, config);
       
-      updateUser(data); // Atualiza o context e o localStorage
+      updateUser(data);
       setMessage('Perfil atualizado com sucesso!');
       setPassword('');
       setConfirmPassword('');
@@ -64,41 +64,19 @@ const ProfilePage = () => {
         {message && <p className="success-message">{message}</p>}
         <div className="form-group">
           <label htmlFor="name">Nome</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
+          <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} required />
         </div>
         <div className="form-group">
           <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </div>
         <div className="form-group">
           <label htmlFor="password">Nova Senha (deixe em branco para manter a atual)</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
         <div className="form-group">
           <label htmlFor="confirmPassword">Confirmar Nova Senha</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
+          <input type="password" id="confirmPassword" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
         </div>
         <button type="submit" className="auth-button">Atualizar Perfil</button>
       </form>

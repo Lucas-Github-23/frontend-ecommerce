@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react'; // Adicionado useContext
-import axios from 'axios';
-import { AuthContext } from '../context/AuthContext'; // Importando o AuthContext
+import React, { useState, useEffect, useContext } from 'react';
+import axios from '../api/axiosConfig'; // Alterado para usar a configuração central do Axios
+import { AuthContext } from '../context/AuthContext';
 import './AdminPage.css';
 
 const AdminPage = () => {
@@ -10,13 +10,12 @@ const AdminPage = () => {
     description: '',
     price: '',
     category: '',
-    imageUrl: '',
     inStock: 1,
     isFeatured: false,
   });
+  const [imageFile, setImageFile] = useState(null);
   const [editingId, setEditingId] = useState(null);
-
-  const { userInfo } = useContext(AuthContext); // Acessando os dados do usuário logado
+  const { userInfo } = useContext(AuthContext);
 
   useEffect(() => {
     fetchProducts();
@@ -24,7 +23,7 @@ const AdminPage = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/products');
+      const response = await axios.get('/api/products');
       setProducts(response.data);
     } catch (error) {
       console.error("Erro ao buscar produtos:", error);
@@ -33,37 +32,45 @@ const AdminPage = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+  };
+
+  const handleFileChange = (e) => {
+    setImageFile(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Configuração do cabeçalho com o token de autorização
+    const submissionData = new FormData();
+    submissionData.append('name', formData.name);
+    submissionData.append('description', formData.description);
+    submissionData.append('price', formData.price);
+    submissionData.append('category', formData.category);
+    submissionData.append('inStock', formData.inStock);
+    submissionData.append('isFeatured', formData.isFeatured);
+    if (imageFile) {
+      submissionData.append('image', imageFile);
+    }
+
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
 
     const method = editingId ? 'put' : 'post';
-    const url = editingId 
-      ? `http://localhost:5000/api/products/${editingId}` 
-      : 'http://localhost:5000/api/products';
+    const url = editingId ? `/api/products/${editingId}` : '/api/products';
 
     try {
-      // Passando a configuração para a requisição axios
-      await axios[method](url, formData, config);
+      await axios[method](url, submissionData, config);
       alert(`Produto ${editingId ? 'atualizado' : 'adicionado'} com sucesso!`);
       resetForm();
       fetchProducts();
     } catch (error) {
-      console.error("Erro ao salvar produto:", error);
-      alert("Falha ao salvar produto. Verifique se você tem permissão.");
+      console.error("Erro ao guardar produto:", error);
+      alert("Falha ao guardar produto.");
     }
   };
 
@@ -74,55 +81,48 @@ const AdminPage = () => {
       description: product.description,
       price: product.price,
       category: product.category,
-      imageUrl: product.imageUrl,
       inStock: product.inStock,
       isFeatured: product.isFeatured,
     });
+    setImageFile(null);
   };
 
   const handleDelete = async (id) => {
     if (window.confirm("Tem certeza que deseja deletar este produto?")) {
-      
-      // Configuração do cabeçalho com o token de autorização
-      const config = {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      };
-
+      const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
       try {
-        // Passando a configuração para a requisição axios
-        await axios.delete(`http://localhost:5000/api/products/${id}`, config);
+        await axios.delete(`/api/products/${id}`, config);
         alert("Produto deletado com sucesso!");
         fetchProducts();
       } catch (error) {
         console.error("Erro ao deletar produto:", error);
-        alert("Falha ao deletar produto. Verifique se você tem permissão.");
+        alert("Falha ao deletar produto.");
       }
     }
   };
 
   const resetForm = () => {
     setEditingId(null);
-    setFormData({
-      name: '', description: '', price: '', category: '', imageUrl: '', inStock: 1, isFeatured: false,
-    });
+    setFormData({ name: '', description: '', price: '', category: '', inStock: 1, isFeatured: false });
+    setImageFile(null);
+    if (document.getElementById('image-upload')) {
+        document.getElementById('image-upload').value = null;
+    }
   };
 
   return (
     <div className="admin-page">
       <h2>Painel de Administração</h2>
-      
       <div className="admin-form-container">
         <h3>{editingId ? 'Editar Produto' : 'Adicionar Novo Produto'}</h3>
         <form onSubmit={handleSubmit}>
-          {/* Inputs do formulário */}
           <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Nome do Produto" required />
           <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Descrição" required />
           <input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="Preço" required min="0" step="0.01" />
           <input type="text" name="category" value={formData.category} onChange={handleChange} placeholder="Categoria" required />
-          <input type="text" name="imageUrl" value={formData.imageUrl} onChange={handleChange} placeholder="URL da Imagem" required />
           <input type="number" name="inStock" value={formData.inStock} onChange={handleChange} placeholder="Estoque" required min="0" />
+          <label htmlFor="image-upload">Imagem do Produto</label>
+          <input id="image-upload" type="file" name="image" onChange={handleFileChange} required={!editingId} />
           <label>
             <input type="checkbox" name="isFeatured" checked={formData.isFeatured} onChange={handleChange} />
             Produto em Destaque?
@@ -133,33 +133,7 @@ const AdminPage = () => {
           </div>
         </form>
       </div>
-
-      <div className="admin-product-list">
-        <h3>Lista de Produtos</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Preço</th>
-              <th>Categoria</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map(product => (
-              <tr key={product._id}>
-                <td>{product.name}</td>
-                <td>R$ {product.price.toFixed(2)}</td>
-                <td>{product.category}</td>
-                <td>
-                  <button onClick={() => handleEdit(product)}>Editar</button>
-                  <button onClick={() => handleDelete(product._id)}>Deletar</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {/* Tabela de produtos */}
     </div>
   );
 };

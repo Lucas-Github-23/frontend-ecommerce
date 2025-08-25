@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../api/axiosConfig'; // Alterado para usar a configuração central do Axios
 import ProductCard from '../components/ProductCard';
 import './ProductsPage.css';
 
@@ -15,11 +15,10 @@ const ProductsPage = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/products');
+        const response = await axios.get('/api/products');
         setProducts(response.data);
         setFilteredProducts(response.data);
         
-        // Extrai categorias únicas dos produtos
         const uniqueCategories = ['All', ...new Set(response.data.map(p => p.category))];
         setCategories(uniqueCategories);
         setError('');
