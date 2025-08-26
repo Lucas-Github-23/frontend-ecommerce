@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from '../api/axiosConfig'; // Alterado para usar a configuração central do Axios
+import axios from '../api/axiosConfig';
 import { AuthContext } from '../context/AuthContext';
 import './AdminPage.css';
 
@@ -10,10 +10,10 @@ const AdminPage = () => {
     description: '',
     price: '',
     category: '',
+    imageUrl: '', // Campo para a URL da imagem
     inStock: 1,
     isFeatured: false,
   });
-  const [imageFile, setImageFile] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const { userInfo } = useContext(AuthContext);
 
@@ -32,39 +32,30 @@ const AdminPage = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
-  };
-
-  const handleFileChange = (e) => {
-    setImageFile(e.target.files[0]);
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const submissionData = new FormData();
-    submissionData.append('name', formData.name);
-    submissionData.append('description', formData.description);
-    submissionData.append('price', formData.price);
-    submissionData.append('category', formData.category);
-    submissionData.append('inStock', formData.inStock);
-    submissionData.append('isFeatured', formData.isFeatured);
-    if (imageFile) {
-      submissionData.append('image', imageFile);
-    }
-
     const config = {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'application/json', // Voltamos a enviar JSON
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
 
     const method = editingId ? 'put' : 'post';
-    const url = editingId ? `/api/products/${editingId}` : '/api/products';
+    const url = editingId 
+      ? `/api/products/${editingId}` 
+      : '/api/products';
 
     try {
-      await axios[method](url, submissionData, config);
+      // Enviamos o formData diretamente, sem FormData
+      await axios[method](url, formData, config);
       alert(`Produto ${editingId ? 'atualizado' : 'adicionado'} com sucesso!`);
       resetForm();
       fetchProducts();
@@ -76,15 +67,16 @@ const AdminPage = () => {
 
   const handleEdit = (product) => {
     setEditingId(product._id);
+    // Preenchemos o formulário com todos os dados, incluindo a imageUrl
     setFormData({
       name: product.name,
       description: product.description,
       price: product.price,
       category: product.category,
+      imageUrl: product.imageUrl,
       inStock: product.inStock,
       isFeatured: product.isFeatured,
     });
-    setImageFile(null);
   };
 
   const handleDelete = async (id) => {
@@ -103,11 +95,9 @@ const AdminPage = () => {
 
   const resetForm = () => {
     setEditingId(null);
-    setFormData({ name: '', description: '', price: '', category: '', inStock: 1, isFeatured: false });
-    setImageFile(null);
-    if (document.getElementById('image-upload')) {
-        document.getElementById('image-upload').value = null;
-    }
+    setFormData({
+      name: '', description: '', price: '', category: '', imageUrl: '', inStock: 1, isFeatured: false,
+    });
   };
 
   return (
@@ -120,9 +110,11 @@ const AdminPage = () => {
           <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Descrição" required />
           <input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="Preço" required min="0" step="0.01" />
           <input type="text" name="category" value={formData.category} onChange={handleChange} placeholder="Categoria" required />
+          
+          {/* Campo de texto para a URL da imagem */}
+          <input type="text" name="imageUrl" value={formData.imageUrl} onChange={handleChange} placeholder="URL da Imagem" required />
+          
           <input type="number" name="inStock" value={formData.inStock} onChange={handleChange} placeholder="Estoque" required min="0" />
-          <label htmlFor="image-upload">Imagem do Produto</label>
-          <input id="image-upload" type="file" name="image" onChange={handleFileChange} required={!editingId} />
           <label>
             <input type="checkbox" name="isFeatured" checked={formData.isFeatured} onChange={handleChange} />
             Produto em Destaque?
@@ -133,7 +125,32 @@ const AdminPage = () => {
           </div>
         </form>
       </div>
-      {/* Tabela de produtos */}
+      <div className="admin-product-list">
+        <h3>Lista de Produtos</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Preço</th>
+              <th>Categoria</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map(product => (
+              <tr key={product._id}>
+                <td>{product.name}</td>
+                <td>R$ {product.price.toFixed(2)}</td>
+                <td>{product.category}</td>
+                <td>
+                  <button onClick={() => handleEdit(product)}>Editar</button>
+                  <button onClick={() => handleDelete(product._id)}>Deletar</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
